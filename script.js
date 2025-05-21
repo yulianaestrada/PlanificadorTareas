@@ -3,6 +3,23 @@ var horario = ["AM", "PM"]
 var tareas = [];
 var duracionMinutos = [15, 30, 45, 60];
 
+const saludito = document.getElementById("saludo");
+const iniciarSesions = document.getElementById("iniciarSesion");
+const eliminarTareas = document.getElementById("eliminarTarea");
+
+iniciarSesions.addEventListener("click", () => {
+    const nombre = prompt("Ingrese su nombre: ")
+    if (nombre) {
+        localStorage.setItem("nombreUsuario", nombre)
+        saludito.textContent = `Bienvenido a la aplicación de tareas ${nombre}`;
+    }
+})
+
+const nombreGuardado = localStorage.getItem("nombreUsuario");
+if (nombreGuardado) {
+    saludito.textContent = `Bienvenido a la aplicación de tareas ${nombreGuardado}`;
+}
+
 function registrarTarea(diaSemana, horarios, duracionTarea, horaInicio, nombreTarea) {
     var contieneDias = diasSemana.includes(diaSemana);
     var contieneHorario = horario.includes(horarios);
@@ -29,9 +46,10 @@ function registrarTarea(diaSemana, horarios, duracionTarea, horaInicio, nombreTa
                 nombre: nombreTarea
             }
             tareas.push(nuevaTarea);
+            localStorage.setItem('nuevaTarea', JSON.stringify(nuevaTarea));
             alert("Tarea Registrada")
         } else {
-            console.log("Datos inválidos. Verifica el día, horario o duración")
+            alert("Datos inválidos. Verifica el día, horario o duración")
         }
     }
 }
@@ -39,13 +57,25 @@ function registrarTarea(diaSemana, horarios, duracionTarea, horaInicio, nombreTa
 function consultarTarea(codigoTarea) {
     let resultado = tareas.filter(tarea => tarea.Codigo === codigoTarea)
     if (resultado.length > 0) {
-        return resultado
+        return alert(JSON.stringify(resultado, null, 2));
     } else {
         alert("Lo Siento, No hay tareas registradas con ese código")
     }
 }
 
+eliminarTareas.addEventListener("click", () => {
+    if (tareas.length > 0) {
+        tareas.length = 0;
+        localStorage.removeItem("nuevaTarea")
+        saludito.textContent = `Tarea Eliminada de la aplicación de tareas`;
+    } else {
+        saludito.textContent = `No hay tareas registradas en la aplicación`;
+    }
+}
+)
+
 registrarTarea("Viernes", "AM", 30, 8, "Hola")
 registrarTarea("Lunes", "AM", 30, 10, "Estudiar")
 
 console.log(tareas)
+
