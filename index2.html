@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestor de Tareas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+  <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4 text-center">📋 Mis Tareas</h1>
+
+    <form id="form-agregar-tarea" class="flex mb-4 gap-2">
+      <input
+        type="text"
+        id="nueva-tarea"
+        placeholder="Escribe una nueva tarea"
+        required
+        class="flex-grow border border-gray-300 px-3 py-2 rounded"
+      />
+      <button
+        type="submit"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Agregar
+      </button>
+    </form>
+
+    <ul id="lista-tareas" class="space-y-2"></ul>
+  </div>
+
+  <script>
+    const API_URL = "https://jsonplaceholder.typicode.com/todos";
+    const listaTareas = document.getElementById("lista-tareas");
+    const form = document.getElementById("form-agregar-tarea");
+    const inputTarea = document.getElementById("nueva-tarea");
+
+    // Obtener tareas del servidor
+    async function cargarTareas() {
+      try {
+        const respuesta = await fetch(API_URL + "?_limit=10");
+        const tareas = await respuesta.json();
+        tareas.forEach(tarea => mostrarTarea(tarea));
+      } catch (error) {
+        console.error("Error al cargar tareas:", error);
+      }
+    }
+
+    // Mostrar una tarea en la interfaz
+    function mostrarTarea(tarea) {
+      const li = document.createElement("li");
+      li.className =
+        "flex items-center justify-between bg-gray-100 p-3 rounded";
+
+      const texto = document.createElement("span");
+      texto.textContent = tarea.title;
+      texto.className = tarea.completed ? "line-through text-gray-500" : "";
+
+      const botones = document.createElement("div");
+      botones.className = "flex gap-2";
+
+      const btnCompletar = document.createElement("button");
+      btnCompletar.textContent = "✅";
+      btnCompletar.className =
+        "bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600";
+      btnCompletar.onclick = () => {
+        tarea.completed = !tarea.completed;
+        texto.classList.toggle("line-through");
+        texto.classList.toggle("text-gray-500");
+      };
+
+      const btnEliminar = document.createElement("button");
+      btnEliminar.textContent = "🗑️";
+      btnEliminar.className =
+        "bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600";
+      btnEliminar.onclick = () => li.remove();
+
+      botones.appendChild(btnCompletar);
+      botones.appendChild(btnEliminar);
+
+      li.appendChild(texto);
+      li.appendChild(botones);
+
+      listaTareas.appendChild(li);
+    }
+
+    // Agregar tarea nueva (simulada)
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nuevaTareaTexto = inputTarea.value.trim();
+
+      if (nuevaTareaTexto !== "") {
+        try {
+          const respuesta = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              title: nuevaTareaTexto,
+              completed: false,
+              userId: 1,
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          });
+
+          const tareaCreada = await respuesta.json();
+          mostrarTarea(tareaCreada);
+          inputTarea.value = "";
+        } catch (error) {
+          console.error("Error al agregar tarea:", error);
+        }
+      }
+    });
+
+    // Cargar tareas al iniciar
+    document.addEventListener("DOMContentLoaded", cargarTareas);
+  </script>
+</body>
+</html>

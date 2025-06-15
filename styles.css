@@ -1,0 +1,50 @@
+/* Estilos personalizados para la carga de imágenes */
+.product-image {
+  width: 100%;
+  height: 200px;
+  /* Altura fija para las imágenes */
+  object-fit: contain;
+  /* Asegura que la imagen se ajuste sin cortarse */
+  transition: transform 0.3s ease-in-out;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+  /* Efecto zoom al pasar el mouse */
+}
+
+.scrollable-cart {
+  max-height: 400px;
+  /* Altura máxima para el carrito */
+  overflow-y: auto;
+  /* Habilita el scroll si el contenido excede la altura */
+}
+
+/* Opcional: Estilo simple para el spinner de carga */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #fcd639;
+  /* Color de tu elección, por ejemplo Tailwind indigo-500 */
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#nueva{
+  background-color: #07de62;
+  border-radius: 8px;
+  width: 150px;
+  height: 50px;
+  margin: 5px;
+}
